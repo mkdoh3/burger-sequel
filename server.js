@@ -1,21 +1,36 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const port = process.env.PORT || 3000;
+// Dependencies
+const express = require('express');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
+const exphbs = require('express-handlebars');
+const db = require('./models');
+
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(express.static("public"));
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-    extended: false
+    extended: true
 }));
-const exphbs = require("express-handlebars");
+app.use(bodyParser.text());
+app.use(bodyParser.json({
+    type: "application/vnd.api+json"
+}));
+
+// override delete post
+app.use(methodOverride("_method"));
+
 app.engine("handlebars", exphbs({
     defaultLayout: "main"
 }));
 app.set("view engine", "handlebars");
 
-const routes = require("./controllers/burgers_controllers.js");
-app.use("/", routes);
+require("./controllers/burgers_controllers.js")(app);
 
-
-
-app.listen(port);
+db.sequelize.sync().then(function () {
+    app.listen(PORT, function () {
+        console.log("Listening on PORT " + PORT);
+    });
+});

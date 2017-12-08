@@ -1,52 +1,43 @@
-const express = require('express');
+const db = require("../models");
 
-const router = express.Router();
+module.exports = function (app) {
 
-const burger = require('../models/burgers.js');
-
-
-
-router.get("/", function (req, res) {
-    burger.selectAll(function (allDaBurgers) {
-        let hbsBurgersObj = {
-            burgers: allDaBurgers
-        };
-        res.render('index', hbsBurgersObj)
-    });
-});
-
-router.post('/api/burgers', function (req, res) {
-    burger.insertOne("burger_name", req.body.name, function (result) {
-        console.log('burger added');
-    });
-});
-
-router.put("/api/burgers/:id", function (req, res) {
-    let condition = "id = " + req.params.id;
-    let param = req.body;
-    burger.updateOne(param, condition, function (result) {
-        if (result.changedRows === 0) {
-            console.log('not found');
-            return res.status(404).end();
-        } else {
-            console.log("update successful")
-            res.status(200).end();
-        }
+    app.get('/', function (request, response) {
+        db.Burger.findAll({}).then(function (dbResponse) {
+            response.render("index", {
+                burgers: dbResponse
+            });
+        });
     });
 
-    router.delete("/api/burgers/:id", function (req, res) {
-        let condition = "id = " + req.params.id;
-        burger.deleteOne(condition, function (result) {
-            if (result.affectedRows === 0) {
-                return res.status(404).end();
-            } else {
-                res.status(200).end();
+    app.post("/api/burgers", function (req, res) {
+        console.log(req.body);
+        db.Burger.create({
+            burger_name: req.body.burger_name
+        })
+    });
+
+    app.put("/api/burgers/:id", function (req, res) {
+        console.log(req.body);
+        db.Burger.update({
+            devoured: 1
+        }, {
+            where: {
+                id: req.body.id
             }
         })
+    });
 
-    })
-
-});
-
-
-module.exports = router;
+    //suqelize this!
+    //    app.delete("/api/burgers/:id", function (req, res) {
+    //        let condition = "id = " + req.params.id;
+    //        burger.deleteOne(condition, function (result) {
+    //            if (result.affectedRows === 0) {
+    //                return res.status(404).end();
+    //            } else {
+    //                res.status(200).end();
+    //            }
+    //        })
+    //
+    //    })
+};

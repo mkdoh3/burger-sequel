@@ -1,14 +1,12 @@
 $(function () {
     $(".eat-it").on('click', function (e) {
-        let id = $(this).data("id");
-
-        let eaten = {
-            devoured: true
+        let burgerId = $(this).data("id");
+        let id = {
+            id: burgerId
         };
-
         $.ajax("/api/burgers/" + id, {
             type: "PUT",
-            data: eaten
+            data: id
         }).then(function () {
             location.reload();
         });
@@ -19,14 +17,13 @@ $(function () {
 
     $(".submit-burger").on('click', function (e) {
         let newBurger = {
-            name: $("#burgerText").val()
+            burger_name: $("#burgerText").val()
         };
 
         $.ajax("api/burgers/", {
             type: "POST",
             data: newBurger
         });
-        //no need to reload, the submit button will do it by default
 
     });
 
