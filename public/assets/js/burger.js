@@ -12,9 +12,6 @@ $(function () {
         });
     });
 
-
-    // probs needs some validation to restrict length
-
     $(".submit-burger").on('click', function (e) {
         let newBurger = {
             burger_name: $("#burgerText").val()
@@ -23,8 +20,7 @@ $(function () {
         $.ajax("api/burgers/", {
             type: "POST",
             data: newBurger
-        });
-
+        })
     });
 
     $(".forget-it").on('click', function (e) {

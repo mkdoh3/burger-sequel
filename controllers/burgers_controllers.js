@@ -2,42 +2,45 @@ const db = require("../models");
 
 module.exports = function (app) {
 
-    app.get('/', function (request, response) {
+    app.get('/', function (req, res) {
         db.Burger.findAll({}).then(function (dbResponse) {
-            response.render("index", {
+            res.render("index", {
                 burgers: dbResponse
             });
         });
     });
 
     app.post("/api/burgers", function (req, res) {
-        console.log(req.body);
         db.Burger.create({
             burger_name: req.body.burger_name
-        })
+        }).then(function (dbPost) {
+            res.json(dbPost);
+        });
     });
 
     app.put("/api/burgers/:id", function (req, res) {
-        console.log(req.body);
         db.Burger.update({
             devoured: 1
         }, {
             where: {
                 id: req.body.id
             }
-        })
+        }).then(function (dbPost) {
+            res.json(dbPost);
+        });
     });
 
-    //suqelize this!
-    //    app.delete("/api/burgers/:id", function (req, res) {
-    //        let condition = "id = " + req.params.id;
-    //        burger.deleteOne(condition, function (result) {
-    //            if (result.affectedRows === 0) {
-    //                return res.status(404).end();
-    //            } else {
-    //                res.status(200).end();
-    //            }
-    //        })
-    //
-    //    })
+    app.delete("/api/burgers/:id", function (req, res) {
+        let burgerId = req.params.id;
+        db.Burger.destroy({
+            where: {
+                id: burgerId
+            }
+        }).then(function (dbPost) {
+            console.log('dbPost', dbPost);
+
+            res.json(dbPost);
+        })
+    })
+
 };
