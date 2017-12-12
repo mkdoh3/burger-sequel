@@ -37,8 +37,6 @@ module.exports = function (app) {
                 id: burgerId
             }
         }).then(function (dbPost) {
-            console.log('dbPost', dbPost);
-
             res.json(dbPost);
         })
     })
