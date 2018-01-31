@@ -1,6 +1,8 @@
 # burger-sequel
 <hr>
-A simple CRUD Applications 
+A simple CRUD Application. Order burgers, Eat burgers. 
+
+-----
 
 | Built With   |
 | ------------- |
